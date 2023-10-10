@@ -21,17 +21,36 @@
         </div>
       </div>
     </div>
+    <div
+      class="flex flex-row py-4 px-2 justify-center items-center border-b-2"
+      v-for="(user, id) in usersNew"
+      :key="id"
+      @click="getConversation(user.id)"
+    >
+      <div
+        class="bg-yellow-500 rounded-full text-white font-semibold flex items-center justify-center border-r-2"
+      >
+        {{ user.username.substring(0, 2) }}
+      </div>
+      <div class="w-full mx-8">
+        <div class="text-lg font-semibold">
+          {{ user.username }}
+        </div>
+      </div>
+    </div>
   </div>
   <p v-else-if="error">error: {{ error }}</p>
 </template>
 
 <script setup>
 import gql from 'graphql-tag'
+import { watch, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useQuery, useMutation } from '@vue/apollo-composable'
+import { useQuery, useMutation, useSubscription } from '@vue/apollo-composable'
 
 const store = useStore()
 const props = defineProps(['user'])
+const usersNew = ref([])
 const userId = props.user.id
 
 const SearchUsers = gql`
@@ -59,6 +78,17 @@ const Mutation = gql`
 
 const { mutate } = useMutation(Mutation)
 
+const Subscription = gql`
+  subscription UserNew {
+    userNew {
+      id
+      username
+    }
+  }
+`
+
+const { result: userNew } = useSubscription(Subscription)
+
 const getConversation = async (id) => {
   try {
     const response = await mutate({
@@ -69,4 +99,8 @@ const getConversation = async (id) => {
     console.log('UserList: ', e)
   }
 }
+
+watch(userNew, (data) => {
+  usersNew.value.push(data.userNew)
+})
 </script>

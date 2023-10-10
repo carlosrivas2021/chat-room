@@ -43,8 +43,10 @@ const createOrGetUser = async (username) => {
 }
 const login = async () => {
   const { data } = await createOrGetUser(user.value)
-  store.commit('setUser', data.createUsername)
 
-  router.push({ path: '/home', query: { id: data.createUsername.id } })
+  router.push({
+    path: '/home',
+    query: { id: data.createUsername.id, username: data.createUsername.username }
+  })
 }
 </script>

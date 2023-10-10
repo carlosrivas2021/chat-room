@@ -13,5 +13,9 @@ const typeDefs = /* GraphQL */ `
   type Mutation {
     createUsername(username: String!): User
   }
+
+  type Subscription {
+    userNew: User
+  }
 `;
 export default typeDefs;

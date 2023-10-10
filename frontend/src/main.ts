@@ -2,10 +2,10 @@
 import './assets/index.css'
 
 import { createApp, provide, h } from 'vue'
-import { createStore } from 'vuex'
 
 import App from './App.vue'
 import router from './router'
+import store from './store'
 
 import { ApolloClient, createHttpLink, InMemoryCache, split } from '@apollo/client/core'
 import { DefaultApolloClient } from '@vue/apollo-composable'
@@ -22,30 +22,6 @@ const wsLink = new GraphQLWsLink(
     url: 'ws://localhost:4000/graphql'
   })
 )
-
-const store = createStore({
-  state() {
-    return {
-      count: 0,
-      conversationId: '',
-      user: {}
-    }
-  },
-  mutations: {
-    increment(state) {
-      state.count++
-    },
-    selectConversation(state, newConversationId) {
-      state.conversationId = newConversationId
-    },
-    setUser(state, newUser) {
-      state.user = newUser
-    }
-  },
-  getters: {
-    getConversation: (state) => state.conversationId
-  }
-})
 
 const link = split(
   // split based on operation type

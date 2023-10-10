@@ -1,8 +1,12 @@
 <template>
-  <div v-if="!result" class="overflow-auto hover:overflow-scroll w-1/5">
-    <div v-show="loading">Loading..</div>
-  </div>
   <div class="w-full px-5 flex flex-col justify-between">
+    <div
+      v-if="!result"
+      class="flex flex-col mt-5 overflow-auto hover:overflow-scroll"
+      v-show="loading"
+    >
+      Loading..
+    </div>
     <div v-if="result" class="flex flex-col mt-5 overflow-auto hover:overflow-scroll">
       <div v-for="(message, id) in result.messages" :key="id">
         <div v-if="senderId === message.sender.id" class="flex justify-end mb-4">
@@ -30,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div v-for="(message, id) in newMessage" :key="id">
+      <div v-for="(message, id) in newMessages" :key="id">
         <div v-if="senderId === message.sender.id" class="flex justify-end mb-4">
           <div
             class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
@@ -78,7 +82,7 @@ import { useQuery, useSubscription, useMutation } from '@vue/apollo-composable'
 const store = useStore()
 const conversationId = computed(() => store.getters['getConversation'])
 const messageToSend = ref('')
-const newMessage = ref([])
+const newMessages = ref([])
 const props = defineProps(['user'])
 const senderId = props.user.id
 
@@ -96,7 +100,7 @@ const Messages = gql`
   }
 `
 
-const { result, loading, error, refetch } = useQuery(Messages, {
+const { result, loading, refetch } = useQuery(Messages, {
   conversationId: conversationId.value
 })
 
@@ -114,11 +118,7 @@ const Subscription = gql`
   }
 `
 
-const {
-  result: messageSent,
-  loading: subscriptionLoading,
-  error: subscriptionError
-} = useSubscription(Subscription, () => ({
+const { result: messageSent } = useSubscription(Subscription, () => ({
   conversationId: conversationId.value
 }))
 
@@ -143,11 +143,11 @@ const sendMessage = async () => {
 }
 
 watch(messageSent, (data) => {
-  newMessage.value.push(data.messageSent)
+  newMessages.value.push(data.messageSent)
 })
 
 watch(conversationId, (newConversationId) => {
-  newMessage.value = []
+  newMessages.value = []
   refetch({ conversationId: newConversationId })
 })
 </script>

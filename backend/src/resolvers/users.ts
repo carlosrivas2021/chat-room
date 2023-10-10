@@ -17,22 +17,23 @@ const resolvers = (pubSub) => {
     },
     Mutation: {
       createUsername: async (parent, args: { username: string }) => {
-        const newUser = new User(args);
+        const userNew = new User(args);
         const user = await User.findOne({ username: args.username });
+
         if (user) {
           return user;
         }
 
-        return newUser.save();
+        pubSub.publish('USER_NEW', userNew);
+        return userNew.save();
       },
     },
-    // Subscription: {
-    //   userNew: {
-    //     // subscribe to the randomNumber event
-    //     subscribe: () => pubSub.subscribe('userNew'),
-    //     resolve: (payload) => payload,
-    //   },
-    // },
+    Subscription: {
+      userNew: {
+        subscribe: () => pubSub.subscribe('USER_NEW'),
+        resolve: (payload) => payload,
+      },
+    },
   };
 };
 
