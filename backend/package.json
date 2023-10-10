@@ -1,0 +1,25 @@
+{
+  "name": "graphql-yoga",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "check": "tsc --pretty --noEmit",
+    "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "graphql": "16.6.0",
+    "graphql-ws": "5.13.1",
+    "graphql-yoga": "4.0.5",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.6.0",
+    "ws": "8.13.0"
+  },
+  "devDependencies": {
+    "ts-node": "10.9.1",
+    "typescript": "5.1.6"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
